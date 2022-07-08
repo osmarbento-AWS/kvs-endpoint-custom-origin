@@ -7,10 +7,17 @@ This is a sample only, not validated for production use cases
 ## usage instruction
 
 ### requeriments
-serverless
+install serverless
+```
+npm install -g serverless
+```
 
 ### configuration
 **1.** edit the file serverless and set your profile, if default, comment the line
+all files is inside the folder LambdaEdge
+```sh
+cd LambdaEdge/
+```
 
 ``` yaml
 provider:
