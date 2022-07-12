@@ -5,7 +5,11 @@
 "use strict";
 
 // get the session url from KVS
+var url = require("url");
 const AWS = require("aws-sdk");
+AWS.config.update({
+  region: "us-east-1", // change to your region, it has to be the reagion where KVS is deployed
+});
 const kinesisvideo = new AWS.KinesisVideo({ apiVersion: "2017-09-30" });
 
 // replace the origin custom origin
@@ -15,7 +19,8 @@ module.exports.kvscustomorigin = async (event, context, callback) => {
   async function getKVSendPoint() {
     var params = {
       APIName: "GET_HLS_STREAMING_SESSION_URL",
-      StreamARN: "<YOUR ARN>",
+      StreamARN:
+        "arn:aws:kinesisvideo:us-east-1:904149973046:stream/qognify/1656708752643",
     };
 
     //KVS call
@@ -29,12 +34,13 @@ module.exports.kvscustomorigin = async (event, context, callback) => {
   }
   // replace the orgin by a custom origin
   const request = event.Records[0].cf.request;
+  let domainEndpoint = url.parse(endPoint.DataEndpoint);
 
   /* Set custom origin fields*/
   if (endPoint.DataEndpoint) {
     request.origin = {
       custom: {
-        domainName: endPoint.DataEndpoint,
+        domainName: domainEndpoint.host,
         port: 443,
         protocol: "https",
         path: "",
@@ -45,7 +51,7 @@ module.exports.kvscustomorigin = async (event, context, callback) => {
       },
     };
 
-    request.headers["host"] = [{ key: "host", value: endPoint.DataEndpoint }];
+    request.headers["host"] = [{ key: "host", value: domainEndpoint.host }];
     callback(null, request);
   }
 };
