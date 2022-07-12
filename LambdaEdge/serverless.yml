@@ -37,6 +37,7 @@ iam:
           Action:
             - "kinesisvideo:GetDataEndpoint"
           Resource: "arn:aws:kinesisvideo:*:904149973046:stream/*/*"
+          
 
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
